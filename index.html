@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ana Gotz | Wedding Photography</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
@@ -245,7 +246,7 @@
                     <div class="text-xs text-gray-500 space-y-2 uppercase tracking-widest font-light">
                         <p data-i18n="contact-location">Based in the Netherlands (Eindhoven Area)</p>
                         <p>T. <a href="tel:+31636217439" class="hover:text-gray-800 transition">+31 6 362 174 39</a></p>
-                        <p>E. <a href="/cdn-cgi/l/email-protection#c2abaca4ad82a3aca3a5adb6b8eca1adaf" class="hover:text-gray-800 transition"><span class="__cf_email__" data-cfemail="d6bfb8b0b996b7b8b7b1b9a2acf8b5b9bb">[email&#160;protected]</span></a></p>
+                        <p>E. <a href="mailto:info@anagotz.com" class="hover:text-gray-800 transition">info@anagotz.com</a></p>
                     </div>
                     <div class="flex justify-center lg:justify-end gap-6 mt-12">
                         <a href="https://www.instagram.com/anagotz/" target="_blank" class="opacity-30 hover:opacity-100 transition">IG</a>
@@ -271,9 +272,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="block text-[10px] uppercase tracking-widest text-gray-400 mb-2" data-i18n="form-date">Event Date</label>
-                            <input type="text" id="cf-date" placeholder="DD / MM / YYYY"
-                                   onfocus="if(!this.dataset.dp){initDatePicker(this);this.dataset.dp='1'}"
-                                   autocomplete="off" readonly style="cursor:pointer">
+                            <input type="date" id="cf-date" min="">
                         </div>
                         <div class="mb-4">
                             <label class="block text-[10px] uppercase tracking-widest text-gray-400 mb-2" data-i18n="form-phone">Phone / WhatsApp</label>
@@ -305,21 +304,7 @@
                     </div>
                 </div>
 
-                <!-- Minimal calendar picker -->
-                <style>
-                    #dp-popup { position:fixed; z-index:9999; background:#fff; border:1px solid #e1e1e1; padding:1.25rem; min-width:280px; box-shadow:0 8px 30px rgba(0,0,0,0.1); font-family:'Montserrat',sans-serif; }
-                    #dp-popup .dp-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
-                    #dp-popup .dp-nav { background:none; border:none; cursor:pointer; font-size:1rem; color:#333; padding:4px 8px; }
-                    #dp-popup .dp-month-label { font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; }
-                    #dp-popup .dp-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
-                    #dp-popup .dp-cell { text-align:center; font-size:0.7rem; padding:6px 2px; cursor:pointer; color:#333; border:1px solid transparent; }
-                    #dp-popup .dp-cell:hover { border-color:#333; }
-                    #dp-popup .dp-cell.dp-dow { color:#999; cursor:default; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; }
-                    #dp-popup .dp-cell.dp-dow:hover { border-color:transparent; }
-                    #dp-popup .dp-cell.dp-disabled { color:#ccc; cursor:default; }
-                    #dp-popup .dp-cell.dp-disabled:hover { border-color:transparent; }
-                    #dp-popup .dp-cell.dp-selected { background:#333; color:#fff; }
-                </style>
+
             </div>
         </div>
     </section>
@@ -346,7 +331,7 @@
         </div>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         /* ── Translations ─────────────────────────────────────────────── */
         const translations = {
             en: {
@@ -484,19 +469,31 @@
 
             if (!valid) return;
 
-            // Build mailto and open — best effort delivery
-            const date  = document.getElementById('cf-date').value;
-            const phone = document.getElementById('cf-phone').value;
-            const venue = document.getElementById('cf-venue').value;
-            const body  = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nDate: ${date}\nVenue: ${venue}\n\n${message}`;
-            const user = "info";
-            const domain = "anagotz.com";
-            const fullMail = user + "@" + domain;
-            window.location.href = `mailto:${fullMail}?subject=Wedding%20Enquiry%20%E2%80%93%20${encodeURIComponent(name)}&body=${encodeURIComponent(body)}`;
+            // Disable button while sending
+            const btn = document.getElementById('cf-submit');
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
 
-            // Show success state
-            document.getElementById('contact-form-fields').classList.add('hidden');
-            document.getElementById('contact-success').classList.remove('hidden');
+            const templateParams = {
+                from_name:    name,
+                from_email:   email,
+                event_date:   document.getElementById('cf-date').value  || '—',
+                phone:        document.getElementById('cf-phone').value || '—',
+                venue:        document.getElementById('cf-venue').value || '—',
+                message:      message
+            };
+
+            emailjs.send('service_987wi4h', 'template_nili44k', templateParams)
+                .then(function() {
+                    document.getElementById('contact-form-fields').classList.add('hidden');
+                    document.getElementById('contact-success').classList.remove('hidden');
+                })
+                .catch(function(error) {
+                    console.error('EmailJS error:', error);
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    alert('Something went wrong. Please try again or contact directly via email.');
+                });
         });
 
         /* ── Smooth scroll ────────────────────────────────────────────── */
@@ -531,78 +528,12 @@
         menuBtn && menuBtn.addEventListener('click', openMenu);
         closeBtn && closeBtn.addEventListener('click', closeMenu);
 
-        /* ── Date picker ──────────────────────────────────────────────── */
-        let dpYear, dpMonth, dpTarget;
-
-        function initDatePicker(input) {
-            dpTarget = input;
-            const today = new Date();
-            dpYear = today.getFullYear();
-            dpMonth = today.getMonth();
-            renderDP();
-            document.addEventListener('click', dpOutsideClick);
-        }
-
-        function renderDP() {
-            let popup = document.getElementById('dp-popup');
-            if (!popup) {
-                popup = document.createElement('div');
-                popup.id = 'dp-popup';
-                document.body.appendChild(popup);
-            }
-            const rect = dpTarget.getBoundingClientRect();
-            popup.style.top  = (window.scrollY + rect.bottom + 4) + 'px';
-            popup.style.left = rect.left + 'px';
-
-            const months = ['January','February','March','April','May','June',
-                            'July','August','September','October','November','December'];
-            const firstDay = new Date(dpYear, dpMonth, 1).getDay();
-            const daysInMonth = new Date(dpYear, dpMonth + 1, 0).getDate();
-            const today = new Date(); today.setHours(0,0,0,0);
-
-            let cells = '<div class="dp-cell dp-dow">Su</div><div class="dp-cell dp-dow">Mo</div><div class="dp-cell dp-dow">Tu</div><div class="dp-cell dp-dow">We</div><div class="dp-cell dp-dow">Th</div><div class="dp-cell dp-dow">Fr</div><div class="dp-cell dp-dow">Sa</div>';
-            for (let i = 0; i < firstDay; i++) cells += '<div class="dp-cell"></div>';
-            for (let d = 1; d <= daysInMonth; d++) {
-                const date = new Date(dpYear, dpMonth, d);
-                const past = date < today;
-                const sel  = dpTarget.value === `${String(d).padStart(2,'0')} / ${String(dpMonth+1).padStart(2,'0')} / ${dpYear}`;
-                cells += `<div class="dp-cell${past?' dp-disabled':''}${sel?' dp-selected':''}" ${past?'':'onclick="dpSelect('+d+')"'}>${d}</div>`;
-            }
-
-            popup.innerHTML = `
-                <div class="dp-header">
-                    <button class="dp-nav" onclick="dpNav(-1)">&#8249;</button>
-                    <span class="dp-month-label">${months[dpMonth]} ${dpYear}</span>
-                    <button class="dp-nav" onclick="dpNav(1)">&#8250;</button>
-                </div>
-                <div class="dp-grid">${cells}</div>`;
-        }
-
-        function dpNav(dir) {
-            dpMonth += dir;
-            if (dpMonth < 0) { dpMonth = 11; dpYear--; }
-            if (dpMonth > 11) { dpMonth = 0; dpYear++; }
-            renderDP();
-        }
-
-        function dpSelect(d) {
-            dpTarget.value = `${String(d).padStart(2,'0')} / ${String(dpMonth+1).padStart(2,'0')} / ${dpYear}`;
-            dpClose();
-        }
-
-        function dpClose() {
-            const popup = document.getElementById('dp-popup');
-            if (popup) popup.remove();
-            document.removeEventListener('click', dpOutsideClick);
-        }
-
-        function dpOutsideClick(e) {
-            const popup = document.getElementById('dp-popup');
-            if (popup && !popup.contains(e.target) && e.target !== dpTarget) dpClose();
-        }
-
         /* ── Init ─────────────────────────────────────────────────────── */
-        // Patch lang buttons to carry data-lang attribute so setLang matching is reliable
+        // Set min date to today on the native date input
+        document.getElementById('cf-date').min = new Date().toISOString().split('T')[0];
+        emailjs.init('9_M3Tqt9gCKPY8Qme');
+
+        // Give every lang button a data-lang attribute for reliable matching
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.dataset.lang = btn.textContent.trim().toLowerCase();
         });
