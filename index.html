@@ -489,7 +489,10 @@
             const phone = document.getElementById('cf-phone').value;
             const venue = document.getElementById('cf-venue').value;
             const body  = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nDate: ${date}\nVenue: ${venue}\n\n${message}`;
-            window.location.href = `mailto:info@anagotz.com?subject=Wedding%20Enquiry%20%E2%80%93%20${encodeURIComponent(name)}&body=${encodeURIComponent(body)}`;
+            const user = "info";
+            const domain = "anagotz.com";
+            const fullMail = user + "@" + domain;
+            window.location.href = `mailto:${fullMail}?subject=Wedding%20Enquiry%20%E2%80%93%20${encodeURIComponent(name)}&body=${encodeURIComponent(body)}`;
 
             // Show success state
             document.getElementById('contact-form-fields').classList.add('hidden');
