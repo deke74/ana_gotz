@@ -149,9 +149,13 @@
     </section>
 
     <!-- About Section -->
+    <style>
+        .about-img-wrap { height: 90vw; max-height: 520px; }
+        @media (min-width: 768px) { .about-img-wrap { height: 100%; max-height: none; } }
+    </style>
     <section id="about" class="flex flex-col md:flex-row border-b border-gray-50">
-        <div class="w-full md:w-1/2 overflow-hidden md:self-stretch" style="min-height:260px;height:75vw;" >
-            <img src="https://res.cloudinary.com/dqsh6fvnf/image/upload/v1774347959/ana.pg_zvj7pp.jpg" alt="Ana Gotz" class="w-full h-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000">
+        <div class="about-img-wrap w-full md:w-1/2 overflow-hidden md:self-stretch">
+            <img src="https://res.cloudinary.com/dqsh6fvnf/image/upload/v1774347959/ana.pg_zvj7pp.jpg" alt="Ana Gotz" class="w-full h-full object-cover object-center grayscale hover:grayscale-0 transition-all duration-1000">
         </div>
         <div class="w-full md:w-1/2 flex items-center justify-center p-8 md:p-28 bg-white">
             <div class="max-w-md w-full">
@@ -246,7 +250,7 @@
                     <div class="text-xs text-gray-500 space-y-2 uppercase tracking-widest font-light">
                         <p data-i18n="contact-location">Based in the Netherlands (Eindhoven Area)</p>
                         <p>T. <a href="tel:+31636217439" class="hover:text-gray-800 transition">+31 6 362 174 39</a></p>
-                        <p>E. <a href="mailto:info@anagotz.com" class="hover:text-gray-800 transition">info@anagotz.com</a></p>
+                        <p>E. <a href="/cdn-cgi/l/email-protection#e38a8d858ca3828d82848c9799cd808c8e" class="hover:text-gray-800 transition"><span class="__cf_email__" data-cfemail="6d04030b022d0c030c0a021917430e0200">[email&#160;protected]</span></a></p>
                     </div>
                     <div class="flex justify-center lg:justify-end gap-6 mt-12">
                         <a href="https://www.instagram.com/anagotz/" target="_blank" class="opacity-30 hover:opacity-100 transition">IG</a>
@@ -331,7 +335,7 @@
         </div>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         /* ── Translations ─────────────────────────────────────────────── */
         const translations = {
             en: {
@@ -485,6 +489,8 @@
 
             emailjs.send('service_987wi4h', 'template_nili44k', templateParams)
                 .then(function() {
+                    // Also send the auto-reply to the visitor
+                    emailjs.send('service_987wi4h', 'template_vvfjggs', templateParams);
                     document.getElementById('contact-form-fields').classList.add('hidden');
                     document.getElementById('contact-success').classList.remove('hidden');
                 })
